@@ -13,13 +13,22 @@ ACTNAME=self # 可以给这个账号一个别名
 
 $QSHELL account $ACCESSKEY $SECUREKEY $ACTNAME -w
 
+sys=$(uname -s)
+
 i=0
 
 for filepath in $@; do
 
     i=$((${i}+1))
 
-    filename="$(date +'%Y%m%d%H%M%S')_${filepath##*/}"                                                                         
+    date_prefix=$(date +'%Y%m%d%H%M%S')
+
+    filename="${date_prefix}_${filepath##*/}" 
+
+    # windows 路径匹配不一样
+    if [[ ${sys} == "MINGW64"* ]]; then
+        filename="${date_prefix}_${filepath##*\\}"
+    fi                                                                   
 
     if [ -f "${filepath}" ]; then
 
